@@ -84,13 +84,14 @@ void reverse_left(int time)
     delay(time);
 }
 
-void reset()
+void reset(int time)
 {
-    Serial.println("stop");
+    Serial.println("Resetting pins");
     digitalWrite(right_pin, HIGH);
     digitalWrite(left_pin, HIGH);
     digitalWrite(forward_pin, HIGH);
     digitalWrite(reverse_pin, HIGH);
+    delay(time);
 }
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
@@ -119,7 +120,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         {
         //reset command
         case 48:
-            reset();
+            reset(time1);
             break;
         // single command
         case 49:
@@ -185,6 +186,16 @@ void setup()
     Serial.println();
     Serial.println();
     Serial.println();
+
+    pinMode(right_pin, OUTPUT);
+    pinMode(left_pin, OUTPUT);
+    pinMode(forward_pin, OUTPUT);
+    pinMode(reverse_pin, OUTPUT);
+
+    digitalWrite(right_pin, HIGH);
+    digitalWrite(left_pin, HIGH);
+    digitalWrite(forward_pin, HIGH);
+    digitalWrite(reverse_pin, HIGH);
 
     for (uint8_t t = 4; t > 0; t--)
     {
