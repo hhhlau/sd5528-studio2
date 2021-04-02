@@ -5,12 +5,21 @@ const browserSocket = new WebSocket.Server({ port: 82 });
 
 let connectedClients = {}
 
-carSocket.on('connection', function connection(ws, req) {
-    var userID = parseInt(ws.upgradeReq.url.substr(1), 10)
-    console.log(userID)
-    connectedClients[userID] = ws
+function delay(method, ms) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            method
+            resolve();
+        }, ms);
+    });
+}
 
-    console.log(`[${userID}] Car connected with IP: ${req.socket.remoteAddress} (${req.headers['user-agent']})`)
+carSocket.on('connection', function connection(ws, req) {
+    // var userID = parseInt(ws.upgradeReq.url.substr(1), 10)
+    // console.log(userID)
+    // connectedClients[userID] = ws
+
+    // console.log(`[${userID}] Car connected with IP: ${req.socket.remoteAddress} (${req.headers['user-agent']})`)
     ws.on('message', function incoming(message) {
         console.log('received: %s', message);
     });
@@ -23,20 +32,26 @@ carSocket.on('connection', function connection(ws, req) {
 });
 
 browserSocket.on('connection', function connection(ws, req) {
-
-    if (req.headers['user-agent'].includes('arduino-WebSocket-Client')) {
-        console.log("Found you! Car")
-        connectedClients["car"] = ws
+    console.log(req.headers['user-agent'])
+    if (Object.keys(req.headers).includes('user-agent')) {
+        if (req.headers['user-agent'].includes('arduino-WebSocket-Client')) {
+            console.log("Found you! Car")
+            connectedClients["car"] = ws
+        } else {
+            connectedClients[req.socket.remoteAddress] = ws
+        }
     } else {
         connectedClients[req.socket.remoteAddress] = ws
     }
+
     console.log(`[] Broswer connected with IP: ${req.socket.remoteAddress} (${req.headers['user-agent']})`)
+
 
     // console.log(connectedClients)
     console.log(Object.keys(connectedClients))
-    ws.on('message', function incoming(message) {
+    ws.on('message', async function incoming(message) {
         console.log('received: %s', message);
-        if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP'].includes(message)) {
+        if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP', 'SLOW'].includes(message)) {
             switch (message) {
                 case 'UP':
                     console.log("Switch: UP")
@@ -58,9 +73,15 @@ browserSocket.on('connection', function connection(ws, req) {
                     console.log("Switch: STOP")
                     connectedClients['car'].send('0')
                     break
+                case 'SLOW':
+                    console.log("Go slow")
+                    connectedClients['car'].send('0')
+                    for (var i = 0; i < 4; i++) {
+                        await delay(connectedClients['car'].send('0'), 150)
+                        await delay(connectedClients['car'].send('1'), 250)
+                    }
+                    connectedClients['car'].send('0')
             }
         }
     });
-
-    ws.send('Hello Browser');
 });
