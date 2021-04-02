@@ -5,21 +5,25 @@
       key-event="keydown"
       :key-code="38"
       @success="directionKeyHandler(38)"
+      preventDefault
     />
     <Keypress
       key-event="keydown"
       :key-code="40"
       @success="directionKeyHandler(40)"
+      preventDefault
     />
     <Keypress
       key-event="keydown"
       :key-code="37"
       @success="directionKeyHandler(37)"
+      preventDefault
     />
     <Keypress
       key-event="keydown"
       :key-code="39"
       @success="directionKeyHandler(39)"
+      preventDefault
     />
     <Keypress key-event="keyup" :key-code="38" @success="stopTheCar" />
     <Keypress key-event="keyup" :key-code="40" @success="stopTheCar" />
@@ -58,6 +62,7 @@ export default {
     captureImg() {
       // Do something
       console.log("Image captured");
+      socket.send(`SLOW`);
     },
     toggleDrivingMode() {
       console.log("hi");
