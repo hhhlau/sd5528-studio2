@@ -28,7 +28,9 @@
           />
         </svg>
       </div>
-      <div class="msg-block"></div>
+      <div class="msg-block">
+        <v-btn color="error" @click="test3">text</v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +38,7 @@
 <script>
 import CarControl from "@/components/CarControl";
 import anime from "animejs";
+import { ref } from '@vue/composition-api'
 
 const isReachable = require("is-reachable");
 
@@ -59,6 +62,14 @@ export default {
         "M41.9,-32.7C55.7,-16.2,69,1.3,63,9C56.9,16.8,31.5,14.7,14.3,18.8C-2.9,22.9,-11.9,33.2,-20.3,32.7C-28.6,32.3,-36.4,21.2,-41.3,7.2C-46.3,-6.8,-48.4,-23.6,-41.1,-38.6C-33.8,-53.6,-16.9,-66.8,-1.4,-65.7C14.1,-64.6,28.2,-49.2,41.9,-32.7Z",
       ],
     };
+  },
+  setup(props) {
+    console.log(props)
+    const detected = ref([])
+    const detectionUpdate = () => {
+      detected.value = [{type: 'puddle'}]
+    }
+    return {detected, detectionUpdate}
   },
   mounted() {
     // anime({
@@ -96,6 +107,9 @@ export default {
         console.log("the car is offline");
       }
     },
+    test3: function () {
+      this.detectionUpdate()
+    }
   },
 };
 </script>

@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-rc.6",
     "animejs": "^3.2.1",
     "core-js": "^3.6.5",
     "is-reachable": "^5.0.0",
