@@ -1,6 +1,4 @@
 const WebSocket = require('ws');
-const carSocket = new WebSocket.Server({ port: 81 });
-
 const browserSocket = new WebSocket.Server({ port: 82 });
 
 let connectedClients = {}
@@ -14,29 +12,15 @@ function delay(method, ms) {
     });
 }
 
-carSocket.on('connection', function connection(ws, req) {
-    // var userID = parseInt(ws.upgradeReq.url.substr(1), 10)
-    // console.log(userID)
-    // connectedClients[userID] = ws
-
-    // console.log(`[${userID}] Car connected with IP: ${req.socket.remoteAddress} (${req.headers['user-agent']})`)
-    ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
-    });
-
-
-    // setInterval(() => {
-    //     console.log('H')
-    //     ws.send('Hello');
-    // }, 1000)
-});
-
 browserSocket.on('connection', function connection(ws, req) {
     console.log(req.headers['user-agent'])
     if (Object.keys(req.headers).includes('user-agent')) {
         if (req.headers['user-agent'].includes('arduino-WebSocket-Client')) {
             console.log("Found you! Car")
             connectedClients["car"] = ws
+        } else if (req.headers['user-agent'].includes('AppleWebKit')) {
+            console.log("Got you browser!")
+            connectedClients["browser"] = ws
         } else {
             connectedClients[req.socket.remoteAddress] = ws
         }
@@ -44,14 +28,18 @@ browserSocket.on('connection', function connection(ws, req) {
         connectedClients[req.socket.remoteAddress] = ws
     }
 
-    console.log(`[] Broswer connected with IP: ${req.socket.remoteAddress} (${req.headers['user-agent']})`)
 
 
     // console.log(connectedClients)
     console.log(Object.keys(connectedClients))
     ws.on('message', async function incoming(message) {
-        console.log('received: %s', message);
-        if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP', 'SLOW'].includes(message)) {
+        // console.log(Object.keys(this))
+        // console.log(JSON.parse(message))
+        let data = JSON.parse(message)
+        console.table(data)
+        // if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP', 'SLOW'].includes(message)) 
+        if (Object.keys(data).includes("direction")) {
+            console.log('from browser')
             switch (message) {
                 case 'UP':
                     console.log("Switch: UP")
@@ -82,6 +70,17 @@ browserSocket.on('connection', function connection(ws, req) {
                     }
                     connectedClients['car'].send('0')
             }
+        } else if (Object.keys(data).includes("detections")) {
+            console.log("is data")
+            let _detectionData = data["detections"]
+            _detectionData.forEach(function (detection) {
+                console.log(detection)
+                if (Object.keys(connectedClients).includes("browser")) {
+                    connectedClients['browser'].send(JSON.stringify(detection))
+                }
+
+            })
+
         }
     });
 });
