@@ -213,7 +213,7 @@ void setup()
     }
 
     // server address, port and URL
-    webSocket.begin("158.132.55.92", 82, "/car");
+    webSocket.begin("192.168.0.2", 82, "/car");
 
     // event handler
     webSocket.onEvent(webSocketEvent);
