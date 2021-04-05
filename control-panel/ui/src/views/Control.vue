@@ -67,6 +67,7 @@
         />
       </div>
     </div>
+    <p class="control-hint"><strong>Keyboard shortcut: </strong>[p]: toggle presenter view; [1-5]: Select scenarios; [0]: Reset senario;</p>
   </div>
 </template>
 
@@ -332,6 +333,15 @@ export default {
   position: absolute;
   top: -40px;
   left: 16px;
+}
+
+.control-hint {
+  position: absolute;
+  bottom: 0;
+  height: 32px;
+  width: 100%;
+  margin: 8px !important;
+  color: #22292e;
 }
 
 svg.chart {
