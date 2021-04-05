@@ -37,15 +37,15 @@
 
 <script>
 // const socket = new WebSocket("ws://158.132.55.98:81");
-const socket = new WebSocket("ws://158.132.55.92:82/client");
-socket.addEventListener("open", function () {
-  socket.send("Hello Server!");
-});
+// const socket = new WebSocket("ws://localhost:82/client");
+// socket.addEventListener("open", function () {
+//   socket.send("Hello Server!");
+// });
 
-// Listen for messages
-socket.addEventListener("message", function (event) {
-  console.log("Message from server ", event.data);
-});
+// // Listen for messages
+// socket.addEventListener("message", function (event) {
+//   console.log("Message from server ", event.data);
+// });
 export default {
   name: "CarControlComp",
   components: {
@@ -62,33 +62,33 @@ export default {
     captureImg() {
       // Do something
       console.log("Image captured");
-      socket.send(`SLOW`);
+      this.$parent.socket.send(`{"direction":"SLOW"}`);
     },
     toggleDrivingMode() {
       console.log("hi");
       this.isManual = !this.isManual;
     },
     stopTheCar() {
-      socket.send(`STOP`); //0
+      this.$parent.socket.send(`{"direction":"STOP"}`); //0
     },
     directionKeyHandler(keyCode) {
       switch (keyCode) {
         case 37: // Arrow LEFT
           console.log("left"); //4
-          socket.send(`LEFT`);
+          this.$parent.socket.send(`{"direction":"LEFT"}`);
           break;
         case 38: // Arrow UP
           console.log("up"); //1
-          socket.send(`UP`);
+          this.$parent.socket.send(`{"direction":"UP"}`);
 
           break;
         case 39: // Arrow RIGHT
           console.log("right"); //3
-          socket.send(`RIGHT`);
+          this.$parent.socket.send(`{"direction":"RIGHT"}`);
           break;
         case 40: // Arrow DOWN
           console.log("back"); //2
-          socket.send(`BACK`);
+          this.$parent.socket.send(`{"direction":"BACK"}`);
           break;
       }
     },
