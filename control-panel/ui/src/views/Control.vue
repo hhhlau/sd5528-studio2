@@ -30,7 +30,9 @@
           <circle class="item-spot" cx="100" cy="50" r="5" />
         </svg>
       </div>
-      <div class="msg-block"></div>
+      <div class="msg-block">
+        <v-btn color="error" @click="test3">text</v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +40,7 @@
 <script>
 import CarControl from "@/components/CarControl";
 import anime from "animejs";
+import { ref } from "@vue/composition-api";
 
 const isReachable = require("is-reachable");
 
@@ -77,6 +80,23 @@ export default {
       ],
     };
   },
+  setup(props) {
+    console.log(props);
+    const detected = ref([]);
+    const detectionUpdate = () => {
+      detected.value = [{ type: "puddle" }];
+    };
+    return { detected, detectionUpdate };
+  },
+  mounted() {
+    // anime({
+    //   targets: "div",
+    //   translateX: 250,
+    //   rotate: "1turn",
+    //   backgroundColor: "#FFF",
+    //   duration: 800,
+    // });
+  },
   methods: {
     testFunc: function () {
       anime({
@@ -115,6 +135,9 @@ export default {
       } else {
         console.log("the car is offline");
       }
+    },
+    test3: function () {
+      this.detectionUpdate();
     },
   },
 };
