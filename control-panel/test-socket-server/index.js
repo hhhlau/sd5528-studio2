@@ -36,7 +36,7 @@ browserSocket.on('connection', function connection(ws, req) {
         // console.log(Object.keys(this))
         // console.log(JSON.parse(message))
         let data = JSON.parse(message)
-        console.table(data)
+        // console.table(data)
         // if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP', 'SLOW'].includes(message)) 
         if (Object.keys(data).includes("direction")) {
             console.log('from browser')
@@ -72,14 +72,15 @@ browserSocket.on('connection', function connection(ws, req) {
             }
         } else if (Object.keys(data).includes("detections")) {
             console.log("is data")
-            let _detectionData = data["detections"]
-            _detectionData.forEach(function (detection) {
-                console.log(detection)
-                if (Object.keys(connectedClients).includes("browser")) {
-                    connectedClients['browser'].send(JSON.stringify(detection))
-                }
+            connectedClients['browser'].send(JSON.stringify(data))
+            // let _detectionData = data["detections"]
+            // _detectionData.forEach(function (detection) {
+            //     // console.log(detection)
+            //     if (Object.keys(connectedClients).includes("browser")) {
+            //         connectedClients['browser'].send(JSON.stringify(detection))
+            //     }
 
-            })
+            // })
 
         }
     });
