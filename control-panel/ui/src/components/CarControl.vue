@@ -29,9 +29,6 @@
     <Keypress key-event="keyup" :key-code="40" @success="stopTheCar" />
     <Keypress key-event="keyup" :key-code="37" @success="stopTheCar" />
     <Keypress key-event="keyup" :key-code="39" @success="stopTheCar" />
-
-    <Keypress key-event="keydown" :key-code="32" @success="captureImg" />
-    <Keypress key-event="keydown" :key-code="84" @success="toggleDrivingMode" />
   </div>
 </template>
 
