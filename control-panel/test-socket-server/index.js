@@ -40,7 +40,7 @@ browserSocket.on('connection', function connection(ws, req) {
         // if (['UP', 'BACK', 'LEFT', 'RIGHT', 'STOP', 'SLOW'].includes(message)) 
         if (Object.keys(data).includes("direction")) {
             console.log('from browser')
-            switch (message) {
+            switch (data.direction) {
                 case 'UP':
                     console.log("Switch: UP")
                     connectedClients['car'].send('1')
@@ -49,30 +49,32 @@ browserSocket.on('connection', function connection(ws, req) {
                     console.log("Switch: BACK")
                     connectedClients['car'].send('2')
                     break
-                case 'RIGHT':
-                    console.log("Switch: RIGHT")
-                    connectedClients['car'].send('3')
-                    break
-                case 'LEFT':
-                    console.log("Switch: LEFT")
-                    connectedClients['car'].send('4')
-                    break
+                // case 'RIGHT':
+                //     console.log("Switch: RIGHT")
+                //     connectedClients['car'].send('3')
+                //     break
+                // case 'LEFT':
+                //     console.log("Switch: LEFT")
+                //     connectedClients['car'].send('4')
+                //     break
                 case 'STOP':
                     console.log("Switch: STOP")
                     connectedClients['car'].send('0')
                     break
                 case 'SLOW':
                     console.log("Go slow")
-                    connectedClients['car'].send('0')
-                    for (var i = 0; i < 4; i++) {
-                        await delay(connectedClients['car'].send('0'), 150)
-                        await delay(connectedClients['car'].send('1'), 250)
-                    }
-                    connectedClients['car'].send('0')
+                    connectedClients['car'].send('3')
+                // for (var i = 0; i < 4; i++) {
+                //     await delay(connectedClients['car'].send('0'), 150)
+                //     await delay(connectedClients['car'].send('1'), 250)
+                // }
+                // connectedClients['car'].send('0')
             }
         } else if (Object.keys(data).includes("detections")) {
             console.log("is data")
-            connectedClients['browser'].send(JSON.stringify(data))
+            if (Object.keys(connectedClients).includes("browser")) {
+                connectedClients['browser'].send(JSON.stringify(data))
+            }
             // let _detectionData = data["detections"]
             // _detectionData.forEach(function (detection) {
             //     // console.log(detection)
