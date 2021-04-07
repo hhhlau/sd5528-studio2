@@ -65,11 +65,21 @@
     <div :class="`overlay-block ${isPresenterView ? '' : 'd-none'}`">
       <h1>Latent Space</h1>
       <p>
-        Ea rebum labore et aliquyam amet. Labore sit voluptua tempor accusam
-        gubergren lorem et sed. Consetetur eirmod diam ipsum diam lorem, clita
-        et invidunt et vero takimata rebum ipsum, diam justo eos takimata ipsum
-        voluptua sed voluptua. Ea dolores et takimata accusam, clita et erat
-        dolor ipsum sanctus takimata, labore.
+        The word “latent” means “hidden”.<br />It is a concept of deep learning
+        which is a representation of compressed data. The values of compression
+        is to get rid of any extraneous information, and only focus on the most
+        important features including edges, angles… In this space, YOLOv3
+        recognize some objects and map them in to a space as coordinates where
+        similar data are closer together on the graph.
+        <strong>black point</strong> represents <strong>puddle</strong>, while
+        <strong>Green point</strong> represents <strong>human</strong>. And
+        coordinates of these points depends on line combination of some features
+        related to “safe” concept. The
+        <strong style="color: red">red area </strong> represents
+        <strong>“safe” zone</strong>, which means AI’ reasoning influenced by
+        user input. If points are inclusive in “safe” zone with means AI see the
+        scene as safe, AI would control the car just run though the puddle.
+        Otherwise, the car would slow down.
       </p>
       <div class="liveview-view">
         <p class="title">What I see</p>
@@ -88,7 +98,7 @@
       <strong>Keyboard shortcut: </strong>[p]: toggle presenter view; [1-5]:
       Select scenarios; [0]: Reset senario;
     </p>
-    <v-dialog v-model="dialog" persistent max-width="50%">
+    <v-dialog v-model="isSceneDialog" persistent max-width="50%">
       <v-card>
         <v-card-title class="headline">
           Prefer me not to slow down next time?
@@ -99,7 +109,15 @@
             behavior so that I can know how and why to react next time
           </p>
           <v-combobox
-            :items="['items', '123']"
+            :items="[
+              `it doesn’t matter`,
+              `it’s not harmful`,
+              `Slow down makes me feel bad`,
+              `No effect on my car’s performance`,
+              `I enjoy steady speed`,
+              `Puddle is very shallow`,
+              `I don’t care small puddle`,
+            ]"
             label="Possible reasoning"
             multiple
             chips
@@ -108,14 +126,14 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error darken-1" text @click="dialog = false">
+          <v-btn color="error darken-1" text @click="isSceneDialog = false">
             Cancel
           </v-btn>
           <v-btn color="success" large @click="processReasoning">
             Confirm
           </v-btn>
         </v-card-actions>
-        <v-overlay :value="overlay" absolute>
+        <v-overlay :value="isLoadingOverlay" absolute>
           <v-progress-circular
             :size="70"
             :width="7"
@@ -132,7 +150,6 @@
 import CarControl from "@/components/CarControl";
 import anime from "animejs";
 import { onMounted, ref, computed, watch } from "@vue/composition-api";
-
 
 // function delay(ms) {
 //   return new Promise(function (resolve) {
@@ -158,6 +175,20 @@ export default {
     let isReadyToStartDemo = ref(false);
 
     const currentScene = ref(1);
+
+    const isSceneDialog = ref(false);
+    const isLoadingOverlay = ref(false);
+
+    const processReasoning = () => {
+      isLoadingOverlay.value = true;
+      setTimeout(function () {
+        isLoadingOverlay.value = false;
+        isSceneDialog.value = false;
+      }, 3000);
+      setTimeout(function () {
+        togglelatentSpaceAnimation();
+      }, 5000);
+    };
     const scenesDescription = [
       "Current AI behaviour",
       "Trained with HITL",
@@ -260,11 +291,6 @@ export default {
         autoplay: false,
       });
       if (islatentSpaceAnimationPlayed.value) {
-        // _a.seek(0);
-        // console.log("hi")
-        // let spaceEl = document.getElementById('l-space')
-        // console.log(spaceEl)
-        // spaceEl.setAttribute("points", spacePaths[0]);
         _b.play();
       } else {
         _f.play();
@@ -288,27 +314,13 @@ export default {
 
     watch(currentScene, () => {
       if (currentScene.value === 2) {
-        togglelatentSpaceAnimation();
-      } else {
+        // togglelatentSpaceAnimation();
+        isSceneDialog.value = true;
+      } else if (currentScene.value === 1) {
         togglelatentSpaceAnimation();
       }
     });
-    // let isHarmfulPuddle = ref(false);
-    // watch(detectedItems, () => {
-    //   console.log("detection values changes");
-    //   detectedItems.value.forEach((item) => {
-    //     console.log(item);
-    //     if (item.type === "puddle") {
-    //       console.log("I see puddle ");
-    //       if (item.pert > 0.65) {
-    //         console.log("SUPER SURE");
-    //         return (isHarmfulPuddle.value = true);
-    //       } else {
-    //         return (isHarmfulPuddle.value = false);
-    //       }
-    //     }
-    //   });
-    // });
+
     //Life cycle hook
     onMounted(() => {
       _socket.addEventListener("open", function () {
@@ -350,6 +362,9 @@ export default {
       isReadyToStartDemo,
       isCarInSafeMode,
       _socket,
+      isSceneDialog,
+      isLoadingOverlay,
+      processReasoning,
     };
   },
 
@@ -358,20 +373,10 @@ export default {
       isCarViewOnline: false,
       // socket: new WebSocket("ws://localhost:82/client"),
       xVal: 10,
-      dialog: false,
-      overlay: false,
     };
   },
 
-  methods: {
-    processReasoning() {
-      this.overlay = true;
-      document.setTimeout(function() {
-        this.overlay = false;
-        this.dialog = false;
-      }, 5000)
-    }
-  },
+  methods: {},
 };
 </script>
 
@@ -420,17 +425,17 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   right: 24px;
   width: 25vw;
-  height: 75vh;
+  height: 80vh;
   border-radius: 25px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   align-self: center;
 }
 .overlay-block h1 {
-  font-size: 4rem;
+  font-size: 3.5rem;
   color: #fefefe;
 }
 .overlay-block p {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #fafafa;
 }
 .overlay-block > .liveview-view {
