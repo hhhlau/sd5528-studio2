@@ -243,7 +243,9 @@ export default {
 
     const isCarInSafeMode = computed(() => {
       if (detectedItems.value.includes("puddle")) {
-        if (currentScene.value !== 2) {
+        if (currentScene.value === 3 && detectedItems.value.includes("human")) {
+          return true;
+        } else if (currentScene.value < 2) {
           return true;
         } else {
           return false;
