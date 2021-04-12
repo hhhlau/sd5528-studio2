@@ -71,7 +71,7 @@ browserSocket.on('connection', function connection(ws, req) {
                 // connectedClients['car'].send('0')
             }
         } else if (Object.keys(data).includes("detections")) {
-            console.log("is data")
+            // console.log("is data")
             if (Object.keys(connectedClients).includes("browser")) {
                 connectedClients['browser'].send(JSON.stringify(data))
             }
