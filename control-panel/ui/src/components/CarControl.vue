@@ -45,6 +45,7 @@
 // });
 export default {
   name: "CarControlComp",
+  props: ["socket"],
   components: {
     Keypress: () => import("vue-keypress"),
   },
@@ -59,33 +60,33 @@ export default {
     captureImg() {
       // Do something
       console.log("Image captured");
-      this.$parent.socket.send(`{"direction":"SLOW"}`);
+      this.socket.send(`{"direction":"SLOW"}`);
     },
     toggleDrivingMode() {
       console.log("hi");
       this.isManual = !this.isManual;
     },
     stopTheCar() {
-      this.$parent.socket.send(`{"direction":"STOP"}`); //0
+      this.socket.send(`{"direction":"STOP"}`); //0
     },
     directionKeyHandler(keyCode) {
       switch (keyCode) {
         case 37: // Arrow LEFT
           console.log("left"); //4
-          this.$parent.socket.send(`{"direction":"LEFT"}`);
+          this.socket.send(`{"direction":"LEFT"}`);
           break;
         case 38: // Arrow UP
           console.log("up"); //1
-          this.$parent.socket.send(`{"direction":"UP"}`);
+          this.socket.send(`{"direction":"UP"}`);
 
           break;
         case 39: // Arrow RIGHT
           console.log("right"); //3
-          this.$parent.socket.send(`{"direction":"RIGHT"}`);
+          this.socket.send(`{"direction":"RIGHT"}`);
           break;
         case 40: // Arrow DOWN
           console.log("back"); //2
-          this.$parent.socket.send(`{"direction":"BACK"}`);
+          this.socket.send(`{"direction":"BACK"}`);
           break;
       }
     },
