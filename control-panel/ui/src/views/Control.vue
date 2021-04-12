@@ -3,7 +3,7 @@
     <div class="left-container">
       <div class="liveview-block">
         <img
-          src="http://192.168.0.9:8080/stream.mjpg"
+          src="http://192.168.0.13:8080/stream.mjpg"
           class="car-live-view"
           alt=""
         />
@@ -71,20 +71,22 @@
         important features including edges, angles… In this space, YOLOv3
         recognize some objects and map them in to a space as coordinates where
         similar data are closer together on the graph.
-        <strong>black point</strong> represents <strong>puddle</strong>, while
-        <strong>Green point</strong> represents <strong>human</strong>. And
-        coordinates of these points depends on line combination of some features
-        related to “safe” concept. The
-        <strong style="color: red">red area </strong> represents
-        <strong>“safe” zone</strong>, which means AI’ reasoning influenced by
-        user input. If points are inclusive in “safe” zone with means AI see the
-        scene as safe, AI would control the car just run though the puddle.
-        Otherwise, the car would slow down.
+        <strong style="color: rgb(0, 191, 255)">blue dots</strong> represent
+        <strong style="color: rgb(0, 191, 255)">puddle</strong>, while
+        <strong style="color: yellow">yello dots</strong> represent
+        <strong style="color: yellow">human</strong>. And coordinates of these
+        points depends on line combination of some features related to “safe”
+        concept. The
+        <strong style="color: rgb(255, 0, 102)">red area </strong> represents
+        <strong style="color: rgb(255, 0, 102)">“safe” zone</strong>, which
+        means AI’ reasoning influenced by user input. If points are inclusive in
+        “safe” zone with means AI see the scene as safe, AI would control the
+        car just run though the puddle. Otherwise, the car would slow down.
       </p>
       <div class="liveview-view">
         <p class="title">What I see</p>
         <img
-          src="http://192.168.0.9:8080/stream.mjpg"
+          src="http://192.168.0.10:8081/video.mjpg"
           class="car-live-view"
           alt=""
         />
@@ -253,6 +255,7 @@ export default {
       } else {
         return false;
       }
+      // return true;
     });
 
     // Methods
@@ -463,6 +466,7 @@ export default {
 }
 .scenario-labeling > p {
   margin: 0;
+  color: white;
 }
 
 .scenario-labeling > .scene-stage {
@@ -492,10 +496,10 @@ svg > .item-spot {
   fill: white;
 }
 
-.item-spot.paddle {
-  fill: lightblue;
+.item-spot.puddle {
+  fill: rgb(0, 191, 255);
 }
 .item-spot.human {
-  fill: lightgreen;
+  fill: yellow;
 }
 </style>
